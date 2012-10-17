@@ -12,7 +12,7 @@ public class ClientGUI extends JFrame{
 	private JTextField textField1;
 	private JLabel label1;
 	private JButton button1;
-	private JTextArea textArea1 = new JTextArea();
+	private JTextArea textArea1;
 	
 	// Chat Window
 	private JPanel panel2;
@@ -21,11 +21,13 @@ public class ClientGUI extends JFrame{
 	private JTextField textField2;
 	private JButton button2;
 	private JButton button3;
+	private JButton button4;
 	private JScrollPane pane1;
 	
 	private String[] users = new String[0];
 	
 	public ClientGUI(){
+		textArea1 = new JTextArea(5, 20);
 		initializeLogin();
 		client = new Client(this);
 		client.run();
@@ -67,9 +69,8 @@ public class ClientGUI extends JFrame{
         pane1.setPreferredSize(new Dimension(150, 300));
         panel2.add(pane1, BorderLayout.EAST);
         
-        textArea1.setPreferredSize(new Dimension(50,20));
         textArea1.setEditable(false);
-        JScrollPane pane2 = new JScrollPane(textArea1);
+        JScrollPane pane2 = new JScrollPane(textArea1, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     	panel2.add(pane2, BorderLayout.CENTER);
     	
     	list1 = new JList(users);
@@ -102,12 +103,29 @@ public class ClientGUI extends JFrame{
     		}
     	});
     	
+    	button4 = new JButton("Logout");
+    	button4.setPreferredSize(new Dimension(80, 25));
+    	button4.addActionListener(new ActionListener(){
+    		public void actionPerformed(ActionEvent e) { 
+    			client.disconnectFromServer();
+    			System.exit(0);
+    		}
+    	});
+    	
     	bottomPanel.add(button2);
     	bottomPanel.add(button3);
+    	bottomPanel.add(button4);
     	panel2.add(bottomPanel, BorderLayout.SOUTH);
     	
+    	addWindowListener(new WindowAdapter() {
+    	  	public void windowClosing(WindowEvent e) {
+    	  		client.disconnectFromServer();
+    			System.exit(0);
+    	  	}
+    	});
+    	
     	pack();
-    	setTitle("ECE356 Chat Client");
+    	setTitle("ECE356 Chat Client: " + this.textField1.getText());
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
@@ -120,6 +138,10 @@ public class ClientGUI extends JFrame{
 	    	list1 = new JList(users);
 	    	pane1.getViewport().add(list1);
     	}
+    }
+    
+    public void close(){
+    	System.exit(0);
     }
     
 	public static void main(String[] args) {

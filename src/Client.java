@@ -38,6 +38,9 @@ public class Client {
 		}
 		catch (Exception e){
 			System.out.println("Connection to server failed.");
+			if(this._gui != null){
+				this._gui.close();
+			}
 			return;
 		}
 		
@@ -64,7 +67,6 @@ public class Client {
 	public void registerUsername(String username){
 		try {
 			this._username = username;
-			System.out.println(username);
 			outToServer.writeBytes("/registerUsername/ " + this._username + " \n");
 		} catch (IOException e) {
 			System.out.println("Registration of username failed.");
@@ -122,6 +124,14 @@ public class Client {
 			clientSocket.close();
 		} catch (IOException e) {
 			System.out.println("Connection failed to close.");
+		}
+	}
+	
+	public void disconnectFromServer(){
+		try {
+			outToServer.writeBytes("LOGOUT\n");
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
